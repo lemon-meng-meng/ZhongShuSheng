@@ -1,4 +1,5 @@
 dist/
+packaging/appimage/
 *.deb
 *.buildinfo
 *.changes
@@ -17,3 +18,9 @@ __pycache__/
 *.swp
 *.swo
 *-
+# debian 构建中间产物
+debian/zhongshu/
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*.substvars
