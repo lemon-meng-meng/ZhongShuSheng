@@ -1,0 +1,39 @@
+Source: zhongshu
+Section: utils
+Priority: optional
+Maintainer: 中书省开发者 <lemon@local>
+Build-Depends: debhelper-compat (= 13),
+ libglib2.0-dev,
+ python3-all,
+ python3-gi,
+ gir1.2-gtk-4.0,
+ gir1.2-libadwaita-1,
+ python3-magic,
+ python3-nautilus,
+ desktop-file-utils,
+ appstream-util
+Standards-Version: 4.6.2
+Homepage: https://github.com/lemon/zhongshu
+Vcs-Git: https://github.com/lemon/zhongshu.git
+Vcs-Browser: https://github.com/lemon/zhongshu
+Rules-Requires-Root: no
+
+Package: zhongshu
+Architecture: all
+Depends: ${misc:Depends},
+ python3,
+ python3-gi,
+ gir1.2-gtk-4.0,
+ gir1.2-libadwaita-1 (>= 1.5),
+ python3-magic,
+ python3-nautilus,
+ libmagic1,
+ pkexec
+Recommends: nautilus
+Description: 系统目录文件管理工具（中书省）
+ 中书省为 Ubuntu/GNOME 用户提供一个图形化界面，在「主目录之外」
+ 对文件/文件夹进行授权、移动、删除、新建与重命名操作，无需记忆
+ 终端命令；所有系统目录写操作通过 pkexec 图形化提权。
+ .
+ 内置 Nautilus 右键菜单扩展「使用中书省操作」，提供五个二级选项：
+ 授予运行权限、移动到、删除、新建文件夹、重命名。

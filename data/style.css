@@ -1,0 +1,26 @@
+/* 中书省自定义样式 */
+
+.zhongshu-tile {
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.zhongshu-tile:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+    transform: translateY(-1px);
+}
+
+.zhongshu-tile:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.warning-banner {
+    background-color: #fa709a;
+    color: white;
+}
+
+.dim-label {
+    opacity: 0.7;
+}

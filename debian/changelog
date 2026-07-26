@@ -1,0 +1,8 @@
+zhongshu (0.1.0-1) noble; urgency=low
+
+  * Initial release.
+  * Provides GUI for granting execute, moving, deleting, creating and
+    renaming files/folders outside the home directory.
+  * Nautilus right-click menu integration.
+
+ -- 中书省开发者 <lemon@local>  Sun, 26 Jul 2026 00:00:00 +0800

@@ -1,0 +1,36 @@
+/* data/style.css */
+.ripple-button {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.ripple-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.ripple-button:active {
+    transform: scale(0.95);
+}
+
+.permission-btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.move-btn { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.delete-btn { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.new-folder-btn { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+.rename-btn { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+
+/* 水波纹动画关键帧 */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.zhongshu.provinces</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>中书省</name>
+  <name xml:lang="en">Zhongshu</name>
+  <summary>系统目录文件管理工具</summary>
+  <summary xml:lang="en">Manage files outside your home folder with pkexec</summary>
+  <description>
+    <p>
+      中书省是一个面向 Ubuntu / GNOME 桌面的图形化小工具，
+      旨在帮助非高级用户在「home 主目录以外」的目录
+      （如 /opt、/usr/local、/etc 等）中对文件与文件夹进行
+      授权、移动、删除、新建与重命名操作，而无需记忆终端命令。
+    </p>
+    <p>
+      所有涉及系统目录的写操作通过 pkexec 进行图形化提权，
+      具备 Nautilus 右键菜单扩展，可对任意文件 / 文件夹直接发起操作。
+    </p>
+  </description>
+  <launchable type="desktop-id">com.zhongshu.provinces.desktop</launchable>
+  <url type="homepage">https://github.com/lemon/zhongshu</url>
+  <url type="bugtracker">https://github.com/lemon/zhongshu/issues</url>
+  <provides>
+    <binary>zhongshu-app</binary>
+  </provides>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.0" date="2026-07-26">
+      <description>
+        <p>首个公开版本，包含五项核心功能与 Nautilus 集成。</p>
+      </description>
+    </release>
+  </releases>
+</component>

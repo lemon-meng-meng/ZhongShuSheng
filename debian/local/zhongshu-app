@@ -1,0 +1,5 @@
+#!/bin/sh
+# debian/local/zhongshu-app —— 全局启动器
+set -e
+export PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}/opt/zhongshu/src"
+exec python3 -c "from zhongshu.app import main; raise SystemExit(main())" "$@"

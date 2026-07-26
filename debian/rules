@@ -1,0 +1,51 @@
+#!/usr/bin/make -f
+# debian/rules —— 中书省打包规则
+# 这是「半原生」方案：debian/rules 自己做 cp/install，避免 python3-setuptools 依赖。
+# 只靠 dh 执行标准流程（debhelper_compat 13）。
+
+export DH_VERBOSE = 1
+
+DESTDIR = $(CURDIR)/debian/zhongshu
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	desktop-file-validate data/com.zhongshu.provinces.desktop || true
+
+override_dh_auto_install:
+	install -d $(DESTDIR)/opt/zhongshu/src/zhongshu
+	install -d $(DESTDIR)/opt/zhongshu/data
+	install -d $(DESTDIR)/usr/bin
+	install -d $(DESTDIR)/usr/share/applications
+	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
+	install -d $(DESTDIR)/usr/share/metainfo
+	install -d $(DESTDIR)/usr/share/nautilus-python/extensions
+
+	cp -r src/zhongshu/. $(DESTDIR)/opt/zhongshu/src/zhongshu/
+	cp -r data/. $(DESTDIR)/opt/zhongshu/data/
+
+	install -m0755 debian/local/zhongshu-app $(DESTDIR)/usr/bin/zhongshu-app
+
+	install -m0644 data/com.zhongshu.provinces.desktop \
+		$(DESTDIR)/usr/share/applications/com.zhongshu.provinces.desktop
+
+	install -m0644 data/icons/com.zhongshu.provinces.png \
+		$(DESTDIR)/usr/share/icons/hicolor/scalable/apps/com.zhongshu.provinces.png
+
+	install -m0644 data/com.zhongshu.provinces.metainfo.xml \
+		$(DESTDIR)/usr/share/metainfo/com.zhongshu.provinces.metainfo.xml
+
+	install -m0644 nautilus-extension/zhongshu_menu.py \
+		$(DESTDIR)/usr/share/nautilus-python/extensions/zhongshu_menu.py
+
+	chmod +x $(DESTDIR)/opt/zhongshu/src/zhongshu/*.py || true
+
+override_dh_auto_test:
+	PYTHONPATH=src python3 -c "import zhongshu; from zhongshu import app, window, operation_view, operations, runner; from zhongshu.runner import parse_args; print('smoke test ok')"
+
+override_dh_python3:
+	# 我们不使用 setup.py，但若 dh-python 存在需调用 dh_python3 处理 ${python3:Depends}
+	# 它会扫描包内 .py 文件并填充对 python3、python3-gi 的依赖关系。
+	# 未安装 dh-python 时跳过。
+	which dh_python3 >/dev/null 2>&1 && dh_python3 -p zhongshu /opt/zhongshu/src || true

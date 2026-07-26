@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Name=中书省
+Name[en]=Zhongshu
+GenericName=系统目录文件管理工具
+Comment=在非主目录下对文件/文件夹进行授权、移动、删除、新建与重命名
+Comment[en]=Manage files outside your home folder with pkexec
+# 启动方式：调用 zhongshu-app（放置到 /usr/bin）
+Exec=zhongshu-app
+Terminal=false
+# pkexec 不需要 Terminal
+Icon=com.zhongshu.provinces
+Categories=Utility;
+Keywords=file;folder;chmod;mv;sudo;pkexec;permission;move;delete;rename;
+StartupNotify=true
+StartupWMClass=com.zhongshu.provinces
