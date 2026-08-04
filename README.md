@@ -169,7 +169,3 @@ bash packaging/build-appimage.sh
   在 Nautilus 右键菜单中，会显示徽标强调「系统目录」风险提示。
 - 所有特权命令严格使用位置参数构造，通过 `--` 终止选项，避免路径名注入。
 - 二进制判断使用 libmagic 而非后缀名，避免误授权。
-
-## License
-
-GPL-3.0-or-later，详见 [debian/copyright](debian/copyright)。
