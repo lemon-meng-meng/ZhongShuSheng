@@ -7,7 +7,7 @@ Build-Depends: debhelper-compat (= 13),
  python3-all,
  python3-gi,
  gir1.2-gtk-4.0,
- gir1.2-libadwaita-1,
+ gir1.2-adw-1 | gir1.2-libadwaita-1,
  python3-magic,
  python3-nautilus,
  desktop-file-utils,
@@ -24,12 +24,14 @@ Depends: ${misc:Depends},
  python3,
  python3-gi,
  gir1.2-gtk-4.0,
- gir1.2-libadwaita-1 (>= 1.5),
+ gir1.2-adw-1 (>= 1.5) | gir1.2-libadwaita-1 (>= 1.5),
  python3-magic,
  python3-nautilus,
- libmagic1,
+ gir1.2-nautilus-4.0 | gir1.2-nautilus-3.0,
+ libmagic1 | libmagic1t64,
  pkexec
 Recommends: nautilus
+Suggests: nautilus
 Description: 系统目录文件管理工具（中书省）
  中书省为 Ubuntu/GNOME 用户提供一个图形化界面，在「主目录之外」
  对文件/文件夹进行授权、移动、删除、新建与重命名操作，无需记忆

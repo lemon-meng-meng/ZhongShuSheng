@@ -4,8 +4,7 @@
 新建与重命名操作的图形化工具，以 pkexec 进行特权提权。
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __app_id__ = "com.zhongshu.provinces"
 __app_name__ = "中书省"
 __author__ = "中书省开发者"
-__license__ = "GPL-3.0-or-later"

@@ -133,17 +133,28 @@ class MainWindow(Adw.ApplicationWindow):
         self.stack.add_named(Adw.Bin(), "op")
 
     # ---------- 导航 ----------
+    def _replace_op_page(self, view: "OperationView") -> None:
+        """替换 Stack 中名为 'op' 的子页。
+
+        Gtk4 的 Gtk.Stack 没有原生的 replace_named_child 方法，
+        因此先取出现有 child 再添加新的，并复用同一个名字。
+        """
+        existing = self.stack.get_child_by_name("op")
+        if existing is not None:
+            self.stack.remove(existing)
+        self.stack.add_named(view, "op")
+
     def _enter_empty_operation(self, op: str) -> None:
         view = OperationView(op, None, on_back=self._back_home,
                              toast_overlay=self.toast_overlay)
-        self.stack.replace_named_child("op", view)
+        self._replace_op_page(view)
         self.stack.set_visible_child_name("op")
 
     def _enter_operation(self, req) -> None:
         # 由 CLI 参数进入：直接进入视图，路径已填充
         view = OperationView(req.operation, req, on_back=self._back_home,
                              toast_overlay=self.toast_overlay)
-        self.stack.replace_named_child("op", view)
+        self._replace_op_page(view)
         self.stack.set_visible_child_name("op")
 
     def _back_home(self) -> bool:

@@ -21,19 +21,16 @@ echo "==> 提供源码包元数据"
 # 但是 dpkg-buildpackage 会要求 source，我们用 --no-sign --build=binary 跳过。
 
 echo "==> 执行 dpkg-buildpackage"
-DEB_BUILD_OPTIONS="nocheck" dpkg-buildpackage -us -uc -b \
-    --buildinfo-option="-O${DIST}/zhongshu_0.1.0-1.buildinfo" \
-    --changes-option="-O${DIST}/zhongshu_0.1.0-1.changes" \
-    2>&1 || {
-        echo "dpkg-buildpackage 失败。若缺少依赖："
-        echo "  sudo apt-get install -y debhelper dh-python devscripts fakeroot"
-        exit 1
-    }
+DEB_BUILD_OPTIONS="nocheck" dpkg-buildpackage -us -uc -b 2>&1 || {
+    echo "dpkg-buildpackage 失败。若缺少依赖："
+    echo "  sudo apt-get install -y debhelper dh-python devscripts fakeroot"
+    exit 1
+}
 
-echo "==> 复制 deb 到 $DIST"
+echo "==> 收集构建产物到 $DIST"
 shopt -s nullglob
-for f in "${HERE}/.."/*.deb; do
-    mv "$f" "$DIST/"
+for f in "${HERE}/.."/*.deb "${HERE}/.."/*.buildinfo "${HERE}/.."/*.changes; do
+    mv -f "$f" "$DIST/"
 done
 
 echo

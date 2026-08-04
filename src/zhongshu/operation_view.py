@@ -67,6 +67,8 @@ class OperationView(Adw.Bin):
 
     def _build_header(self) -> Adw.HeaderBar:
         hb = Adw.HeaderBar()
+        hb.set_show_start_title_buttons(False)
+        hb.set_show_end_title_buttons(False)
         back_btn = Gtk.Button.new_from_icon_name("go-previous-symbolic")
         back_btn.set_tooltip_text("返回")
         back_btn.connect("clicked", lambda *_: self.on_back() if self.on_back else None)
@@ -77,9 +79,21 @@ class OperationView(Adw.Bin):
         return hb
 
     # ---------- 公用：路径选择按钮 ----------
+    #
+    # mode 含义：
+    #   "file"   只能选择文件（Gtk.FileDialog.open）
+    #   "folder" 只能选择文件夹（Gtk.FileDialog.select_folder）
+    #   "both"   同时允许选择文件或文件夹；GTK4 中没有单一 API 同时打开
+    #            文件与文件夹的选择器，故等价于渲染两个按钮，
+    #            分别调用 file / folder 选择方法。
     def _make_path_row(self, default: str = "", placeholder: str = "",
                        row_title: str = "路径", directory_only: bool = False,
+                       mode: str = "file",
                        entry_name: str = "_path_entry") -> Gtk.Box:
+        # 兼容旧调用：未传 mode 但显式传 directory_only=True 时退化为 folder
+        if directory_only and mode == "file":
+            mode = "folder"
+
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         box.set_hexpand(True)
 
@@ -90,20 +104,29 @@ class OperationView(Adw.Bin):
         setattr(self, entry_name, entry)
         box.append(entry)
 
-        btn = Gtk.Button(label="选择…")
-        btn.connect("clicked", self._choose_path, entry, directory_only)
-        box.append(btn)
+        if mode == "both":
+            # 文件选择按钮与文件夹选择按钮各一个；二者均可把结果写入同一 Entry
+            btn_file = Gtk.Button(label="选择文件…")
+            btn_file.set_tooltip_text("选择一个文件")
+            btn_file.connect("clicked", self._choose_path, entry, "file")
+            box.append(btn_file)
+
+            btn_dir = Gtk.Button(label="选择文件夹…")
+            btn_dir.set_tooltip_text("选择一个文件夹")
+            btn_dir.connect("clicked", self._choose_path, entry, "folder")
+            box.append(btn_dir)
+        else:
+            label = "选择…" if mode == "file" else "选择文件夹…"
+            btn = Gtk.Button(label=label)
+            btn.connect("clicked", self._choose_path, entry, mode)
+            box.append(btn)
         return box
 
-    def _choose_path(self, _btn, entry: Gtk.Entry, directory_only: bool) -> None:
-        filt = Gtk.FileFilter()
-        filt.set_name("任意文件")
-        filt.add_pattern("*")
-
+    def _choose_path(self, _btn, entry: Gtk.Entry, mode: str) -> None:
         dialog = Gtk.FileDialog()
-        dialog.set_title("选择" + ("文件夹" if directory_only else "文件"))
-        if directory_only:
-            # 选择文件夹
+        if mode == "folder":
+            dialog.set_title("选择文件夹")
+
             def _handle(d, res):
                 try:
                     f = d.select_folder_finish(res)
@@ -112,6 +135,16 @@ class OperationView(Adw.Bin):
                     pass
             dialog.select_folder(self.get_root(), None, _handle)
         else:
+            dialog.set_title("选择文件")
+            filt = Gtk.FileFilter()
+            filt.set_name("任意文件")
+            filt.add_pattern("*")
+            # GTK4 FileDialog 在 open 模式下默认不显示文件夹；显式开启
+            # filters 难以同时收纳文件夹，故仍以 open 选择文件。
+            filters = Gio.ListStore.new(Gtk.FileFilter)
+            filters.append(filt)
+            dialog.set_filters(filters)
+
             def _handle(d, res):
                 try:
                     f = d.open_finish(res)
@@ -172,7 +205,7 @@ class OperationView(Adw.Bin):
             default=self.request.path if self.request else "",
             placeholder="源路径",
             row_title="源",
-            directory_only=False,
+            mode="both",
             entry_name="_src_entry"))
 
         outer.append(Gtk.Label(label="2. 选择目标父目录（如 /opt）"))
@@ -230,7 +263,7 @@ class OperationView(Adw.Bin):
             default=self.request.path if self.request else "",
             placeholder="目标路径",
             row_title="目标",
-            directory_only=False,
+            mode="both",
             entry_name="_del_entry"))
 
         self._del_confirm = Gtk.CheckButton(label="我已确认此操作不可撤销")
@@ -319,7 +352,7 @@ class OperationView(Adw.Bin):
             default=self.request.path if self.request else "",
             placeholder="目标路径",
             row_title="目标",
-            directory_only=False,
+            mode="both",
             entry_name="_ren_entry"))
 
         name_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)

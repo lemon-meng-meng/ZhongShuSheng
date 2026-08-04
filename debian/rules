@@ -39,6 +39,18 @@ override_dh_auto_install:
 	install -m0644 nautilus-extension/zhongshu_menu.py \
 		$(DESTDIR)/usr/share/nautilus-python/extensions/zhongshu_menu.py
 
+	# 右键菜单部署脚本供 --install-context-menu 子命令使用
+	install -d $(DESTDIR)/opt/zhongshu/scripts
+	install -m0755 scripts/install-context-menu.sh \
+		$(DESTDIR)/opt/zhongshu/scripts/install-context-menu.sh
+	install -m0755 scripts/zhongshu-nautilus-script.sh \
+		$(DESTDIR)/opt/zhongshu/scripts/zhongshu-nautilus-script.sh
+	install -m0755 scripts/uninstall-context-menu.sh \
+		$(DESTDIR)/opt/zhongshu/scripts/uninstall-context-menu.sh
+
+	# 维护脚本可执行
+	chmod +x debian/postinst debian/prerm 2>/dev/null || true
+
 	chmod +x $(DESTDIR)/opt/zhongshu/src/zhongshu/*.py || true
 
 override_dh_auto_test:

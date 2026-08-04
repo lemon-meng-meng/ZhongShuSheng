@@ -1,5 +1,48 @@
-#!/bin/sh
-# debian/local/zhongshu-app —— 全局启动器
-set -e
-export PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}/opt/zhongshu/src"
-exec python3 -c "from zhongshu.app import main; raise SystemExit(main())" "$@"
+#!/usr/bin/env python3
+"""中书省命令行入口（deb 全局启动器）。
+
+安装位置：/usr/bin/zhongshu-app（由 deb 通过 debian/local 部署）。
+支持同时容纳 GApplication 标准选项与右键菜单使用的自定义选项
+（--operation、--path、--dest、--parent、--name）。
+"""
+from __future__ import annotations
+
+import os
+import sys
+
+
+def _detect_zhongshu_pkg():
+    """定位并加入 sys.path：支持源码运行与 deb 安装的 /opt/zhongshu。"""
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        # 1) 源码目录运行：源码树 src/zhongshu
+        os.path.join(here, "src"),
+        # 开发/打包工作目录中可能脚本被软链或复制到不同位置
+        os.path.join(os.getcwd(), "src"),
+        # 2) deb 安装路径
+        "/opt/zhongshu/src",
+        "/usr/lib/zhongshu",
+        "/usr/lib/zhongshu/src",
+    ]
+    for c in candidates:
+        if c not in sys.path and os.path.isdir(os.path.join(c, "zhongshu")):
+            sys.path.insert(0, c)
+            return c
+    return None
+
+
+def main() -> int:
+    _detect_zhongshu_pkg()
+    try:
+        from zhongshu.app import main as gui_main
+    except ImportError as e:
+        sys.stderr.write(
+            "无法定位中书省包，请确认已正确安装。\n"
+            f"原因: {e}\n"
+        )
+        return 1
+    return gui_main()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

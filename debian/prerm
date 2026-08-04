@@ -1,0 +1,21 @@
+#!/bin/sh
+# debian/prerm —— deb 卸载前钩子
+#
+# 重启 Nautilus 使被卸载的扩展从右键菜单消失。
+
+set -e
+
+case "$1" in
+    remove)
+        if command -v nautilus >/dev/null 2>&1; then
+            nautilus -q 2>/dev/null || true
+        elif command -v gnome-files >/dev/null 2>&1; then
+            gnome-files -q 2>/dev/null || true
+        fi
+        # 清理由 postinst 写入的系统级回退
+        rm -f /etc/zhongshu/launcher.path 2>/dev/null || true
+        rmdir /etc/zhongshu 2>/dev/null || true
+        ;;
+esac
+
+exit 0

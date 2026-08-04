@@ -1,0 +1,35 @@
+#!/bin/sh
+# debian/postinst —— deb 安装后钩子
+#
+# deb 包通过 debian/rules 已经把 Nautilus 扩展安装到
+# /usr/share/nautilus-python/extensions/，并把启动器安装到
+# /usr/bin/zhongshu-app。因此 deb 安装即自动具备「右键使用中书省操作」。
+# 此处只做两件轻量工作：
+#   1) 写入 /etc/zhongshu/launcher.path，作为 zhongshu_menu.py 的系统级回退。
+#   2) 重启 Nautilus（若正在运行），让用户无需注销即可看到右键菜单。
+
+set -e
+
+case "$1" in
+    configure)
+        # 1) 写入系统级启动器回退路径
+        if [ -d /etc/zhongshu ] || mkdir -p /etc/zhongshu 2>/dev/null; then
+            if [ -x /usr/bin/zhongshu-app ]; then
+                printf '%s\n' '/usr/bin/zhongshu-app' \
+                    > /etc/zhongshu/launcher.path 2>/dev/null || true
+            fi
+        fi
+
+        # 2) 重启 Nautilus / GNOME Files，让扩展重新加载
+        if command -v nautilus >/dev/null 2>&1; then
+            nautilus -q 2>/dev/null || true
+        elif command -v gnome-files >/dev/null 2>&1; then
+            gnome-files -q 2>/dev/null || true
+        fi
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+esac
+
+# dh_python3 会在此之后接管处理 python 依赖
+exit 0

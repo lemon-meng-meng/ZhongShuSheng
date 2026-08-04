@@ -1,3 +1,22 @@
+zhongshu (0.1.1-2) noble; urgency=high
+
+  * Fix: operation detail view HeaderBar API (set_show_start_title_buttons → 
+    set_show_start_title_buttons / set_show_end_title_buttons).
+  * Fix: right-click context menu installer now auto-detects AppImage in dist/.
+  * Fix: build script handle multi-line descriptions in debian/control.
+
+ -- 中书省开发者 <lemon@local>  Tue, 04 Aug 2026 00:00:00 +0800
+
+zhongshu (0.1.1-1) noble; urgency=low
+
+  * Fix duplicate header bar buttons in secondary views.
+  * Fix file picker to allow both files and folder selection for move/delete/rename.
+  * Add Nautilus desktop right-click context menu support via nautilus-scripts.
+  * Add one-click uninstall script for context menu integration.
+  * Switch license to Apache 2.0.
+
+ -- 中书省开发者 <lemon@local>  Mon, 03 Aug 2026 00:00:00 +0800
+
 zhongshu (0.1.0-1) noble; urgency=low
 
   * Initial release.

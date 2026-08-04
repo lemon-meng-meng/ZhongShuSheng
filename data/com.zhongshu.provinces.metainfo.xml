@@ -2,7 +2,7 @@
 <component type="desktop-application">
   <id>com.zhongshu.provinces</id>
   <metadata_license>FSFAP</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
+  <project_license>Apache-2.0</project_license>
   <name>中书省</name>
   <name xml:lang="en">Zhongshu</name>
   <summary>系统目录文件管理工具</summary>
@@ -30,6 +30,11 @@
   </requires>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.1.1" date="2026-08-03">
+      <description>
+        <p>修复双排标题栏按钮 Bug；移动/删除/重命名支持同时选择文件和文件夹；支持桌面右键菜单；新增一键卸载脚本；切换为 Apache 2.0 协议。</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-07-26">
       <description>
         <p>首个公开版本，包含五项核心功能与 Nautilus 集成。</p>
