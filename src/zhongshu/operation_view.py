@@ -12,15 +12,16 @@ from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
 from . import operations
 from .runner import OperationRequest, OperationRunner
+from .i18n import gettext as _
 
 
 OP_TITLES = {
-    "permission": "授予运行权限",
-    "move": "移动文件 / 文件夹",
-    "delete": "删除文件 / 文件夹",
-    "new_folder": "新建文件夹",
-    "new_file": "新建文件",
-    "rename": "重命名",
+    "permission": _("授予运行权限"),
+    "move": _("移动文件 / 文件夹"),
+    "delete": _("删除文件 / 文件夹"),
+    "new_folder": _("新建文件夹"),
+    "new_file": _("新建文件"),
+    "rename": _("重命名"),
 }
 
 
@@ -60,7 +61,7 @@ class OperationView(Adw.Bin):
         elif self.operation == "rename":
             content.set_child(self._build_rename_ui())
         else:
-            content.set_child(Gtk.Label(label=f"未知操作: {self.operation}"))
+            content.set_child(Gtk.Label(label=_("未知操作: {op}").format(op=self.operation)))
 
         toolbar.set_content(content)
         self.set_child(toolbar)
@@ -70,11 +71,11 @@ class OperationView(Adw.Bin):
         hb.set_show_start_title_buttons(False)
         hb.set_show_end_title_buttons(False)
         back_btn = Gtk.Button.new_from_icon_name("go-previous-symbolic")
-        back_btn.set_tooltip_text("返回")
+        back_btn.set_tooltip_text(_("返回"))
         back_btn.connect("clicked", lambda *_: self.on_back() if self.on_back else None)
         hb.pack_start(back_btn)
-        title = Adw.WindowTitle(title=OP_TITLES.get(self.operation, "操作"),
-                                subtitle="中书省")
+        title = Adw.WindowTitle(title=OP_TITLES.get(self.operation, _("操作")),
+                                subtitle=_("中书省"))
         hb.set_title_widget(title)
         return hb
 
@@ -87,7 +88,7 @@ class OperationView(Adw.Bin):
     #            文件与文件夹的选择器，故等价于渲染两个按钮，
     #            分别调用 file / folder 选择方法。
     def _make_path_row(self, default: str = "", placeholder: str = "",
-                       row_title: str = "路径", directory_only: bool = False,
+                       row_title: str = _("路径"), directory_only: bool = False,
                        mode: str = "file",
                        entry_name: str = "_path_entry") -> Gtk.Box:
         # 兼容旧调用：未传 mode 但显式传 directory_only=True 时退化为 folder
@@ -106,17 +107,17 @@ class OperationView(Adw.Bin):
 
         if mode == "both":
             # 文件选择按钮与文件夹选择按钮各一个；二者均可把结果写入同一 Entry
-            btn_file = Gtk.Button(label="选择文件…")
-            btn_file.set_tooltip_text("选择一个文件")
+            btn_file = Gtk.Button(label=_("选择文件…"))
+            btn_file.set_tooltip_text(_("选择一个文件"))
             btn_file.connect("clicked", self._choose_path, entry, "file")
             box.append(btn_file)
 
-            btn_dir = Gtk.Button(label="选择文件夹…")
-            btn_dir.set_tooltip_text("选择一个文件夹")
+            btn_dir = Gtk.Button(label=_("选择文件夹…"))
+            btn_dir.set_tooltip_text(_("选择一个文件夹"))
             btn_dir.connect("clicked", self._choose_path, entry, "folder")
             box.append(btn_dir)
         else:
-            label = "选择…" if mode == "file" else "选择文件夹…"
+            label = _("选择…") if mode == "file" else _("选择文件夹…")
             btn = Gtk.Button(label=label)
             btn.connect("clicked", self._choose_path, entry, mode)
             box.append(btn)
@@ -125,7 +126,7 @@ class OperationView(Adw.Bin):
     def _choose_path(self, _btn, entry: Gtk.Entry, mode: str) -> None:
         dialog = Gtk.FileDialog()
         if mode == "folder":
-            dialog.set_title("选择文件夹")
+            dialog.set_title(_("选择文件夹"))
 
             def _handle(d, res):
                 try:
@@ -135,9 +136,9 @@ class OperationView(Adw.Bin):
                     pass
             dialog.select_folder(self.get_root(), None, _handle)
         else:
-            dialog.set_title("选择文件")
+            dialog.set_title(_("选择文件"))
             filt = Gtk.FileFilter()
-            filt.set_name("任意文件")
+            filt.set_name(_("任意文件"))
             filt.add_pattern("*")
             # GTK4 FileDialog 在 open 模式下默认不显示文件夹；显式开启
             # filters 难以同时收纳文件夹，故仍以 open 选择文件。
@@ -158,11 +159,11 @@ class OperationView(Adw.Bin):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         outer.set_halign(Gtk.Align.CENTER)
 
-        outer.append(Gtk.Label(label="选择一个二进制文件以授予运行权限"))
+        outer.append(Gtk.Label(label=_("选择一个二进制文件以授予运行权限")))
         outer.append(self._make_path_row(
             default=self.request.path if self.request else "",
             placeholder="/path/to/binary",
-            row_title="文件",
+            row_title=_("文件"),
             directory_only=False,
             entry_name="_path_entry"))
 
@@ -171,7 +172,7 @@ class OperationView(Adw.Bin):
         self._perm_info.add_css_class("dim-label")
         outer.append(self._perm_info)
 
-        btn = Gtk.Button(label="检测并授予运行权限")
+        btn = Gtk.Button(label=_("检测并授予运行权限"))
         btn.add_css_class("suggested-action")
         btn.set_halign(Gtk.Align.CENTER)
         btn.connect("clicked", self._do_permission)
@@ -188,7 +189,7 @@ class OperationView(Adw.Bin):
         is_exec, desc = operations.is_executable_binary(path)
         self._perm_info.set_text(desc)
         if not is_exec:
-            self._show_error("该文件不是可执行二进制，无法授予运行权限")
+            self._show_error(_("该文件不是可执行二进制，无法授予运行权限"))
             return
 
         use_auth = operations.needs_auth_for_target(path)
@@ -200,27 +201,27 @@ class OperationView(Adw.Bin):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         outer.set_halign(Gtk.Align.CENTER)
 
-        outer.append(Gtk.Label(label="1. 选择要移动的文件或文件夹"))
+        outer.append(Gtk.Label(label=_("1. 选择要移动的文件或文件夹")))
         outer.append(self._make_path_row(
             default=self.request.path if self.request else "",
-            placeholder="源路径",
-            row_title="源",
+            placeholder=_("源路径"),
+            row_title=_("源"),
             mode="both",
             entry_name="_src_entry"))
 
-        outer.append(Gtk.Label(label="2. 选择目标父目录（如 /opt）"))
+        outer.append(Gtk.Label(label=_("2. 选择目标父目录（如 /opt）")))
         outer.append(self._make_path_row(
             default=self.request.dest if self.request else "",
             placeholder="/opt",
-            row_title="目标",
+            row_title=_("目标"),
             directory_only=True,
             entry_name="_dest_entry"))
 
-        hint = Gtk.Label(label="如目标在系统目录（非 home），执行时会弹出密码框")
+        hint = Gtk.Label(label=_("如目标在系统目录（非 home），执行时会弹出密码框"))
         hint.add_css_class("dim-label")
         outer.append(hint)
 
-        btn = Gtk.Button(label="执行移动")
+        btn = Gtk.Button(label=_("执行移动"))
         btn.add_css_class("suggested-action")
         btn.set_halign(Gtk.Align.CENTER)
         btn.connect("clicked", self._do_move)
@@ -236,7 +237,7 @@ class OperationView(Adw.Bin):
             return
         ok2, m2 = operations.validate_path(dest, must_exist=True)
         if not ok2 or not operations.safe_is_dir(dest):
-            self._show_error(m2 if not ok2 else "目标不是目录: " + dest)
+            self._show_error(m2 if not ok2 else _("目标不是目录: ") + dest)
             return
 
         cmd = operations.build_command("move", path=src, dest=dest)
@@ -250,26 +251,26 @@ class OperationView(Adw.Bin):
         outer.set_halign(Gtk.Align.CENTER)
 
         banner = Adw.Banner(
-            title="警告：将删除非 home 主目录下的文件/文件夹",
-            button_label="我已知风险，继续操作")
+            title=_("警告：将删除非 home 主目录下的文件/文件夹"),
+            button_label=_("我已知风险，继续操作"))
         banner.set_revealed(True)
         if operations.is_system_path(self.request.path if self.request else "/home"):
             banner.add_css_class("error")
         outer.append(banner)
         self._del_banner = banner
 
-        outer.append(Gtk.Label(label="选择要删除的文件或文件夹"))
+        outer.append(Gtk.Label(label=_("选择要删除的文件或文件夹")))
         outer.append(self._make_path_row(
             default=self.request.path if self.request else "",
-            placeholder="目标路径",
-            row_title="目标",
+            placeholder=_("目标路径"),
+            row_title=_("目标"),
             mode="both",
             entry_name="_del_entry"))
 
-        self._del_confirm = Gtk.CheckButton(label="我已确认此操作不可撤销")
+        self._del_confirm = Gtk.CheckButton(label=_("我已确认此操作不可撤销"))
         outer.append(self._del_confirm)
 
-        btn = Gtk.Button(label="确认删除")
+        btn = Gtk.Button(label=_("确认删除"))
         btn.add_css_class("destructive-action")
         btn.set_halign(Gtk.Align.CENTER)
         btn.connect("clicked", self._do_delete)
@@ -278,7 +279,7 @@ class OperationView(Adw.Bin):
 
     def _do_delete(self, _btn) -> None:
         if not self._del_confirm.get_active():
-            self._show_error("请先勾选确认风险")
+            self._show_error(_("请先勾选确认风险"))
             return
         path = self._del_entry.get_text().strip()
         ok, msg = operations.validate_path(path, must_exist=True)
@@ -293,30 +294,30 @@ class OperationView(Adw.Bin):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         outer.set_halign(Gtk.Align.CENTER)
 
-        label = ("新建文件" if for_file else "新建文件夹")
-        outer.append(Gtk.Label(label=f"{label}：选择父目录并输入名称"))
+        label = (_("新建文件") if for_file else _("新建文件夹"))
+        outer.append(Gtk.Label(label=_("{label}：选择父目录并输入名称").format(label=label)))
 
-        outer.append(Gtk.Label(label="父目录"))
+        outer.append(Gtk.Label(label=_("父目录")))
         outer.append(self._make_path_row(
             default=self.request.parent if self.request else "/opt",
-            placeholder="/opt 或其他系统目录",
-            row_title="父目录",
+            placeholder=_("/opt 或其他系统目录"),
+            row_title=_("父目录"),
             directory_only=True,
             entry_name="_parent_entry"))
 
         name_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         name_box.set_hexpand(True)
         name_entry = Gtk.Entry()
-        name_entry.set_placeholder_text("名称")
+        name_entry.set_placeholder_text(_("名称"))
         name_entry.set_hexpand(True)
         if self.request and self.request.new_name:
             name_entry.set_text(self.request.new_name)
         self._name_entry = name_entry
-        name_box.append(Gtk.Label(label="名称:"))
+        name_box.append(Gtk.Label(label=_("名称:")))
         name_box.append(name_entry)
         outer.append(name_box)
 
-        btn = Gtk.Button(label=("创建文件" if for_file else "创建文件夹"))
+        btn = Gtk.Button(label=(_("创建文件") if for_file else _("创建文件夹")))
         btn.add_css_class("suggested-action")
         btn.set_halign(Gtk.Align.CENTER)
         btn.connect("clicked", self._do_new)
@@ -329,11 +330,11 @@ class OperationView(Adw.Bin):
         name = self._name_entry.get_text().strip()
         red = "/\\:*?\"<>|"
         if not name or any(c in red for c in name) or name.startswith("."):
-            self._show_error("名称为空或包含非法字符")
+            self._show_error(_("名称为空或包含非法字符"))
             return
         ok, m = operations.validate_path(parent, must_exist=True)
         if not ok or not operations.safe_is_dir(parent):
-            self._show_error(m if not ok else "父目录不是目录: " + parent)
+            self._show_error(m if not ok else _("父目录不是目录: ") + parent)
             return
         full = operations.join_path(parent, name)
         if self._new_for_file:
@@ -347,24 +348,24 @@ class OperationView(Adw.Bin):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         outer.set_halign(Gtk.Align.CENTER)
 
-        outer.append(Gtk.Label(label="选择要重命名的文件或文件夹"))
+        outer.append(Gtk.Label(label=_("选择要重命名的文件或文件夹")))
         outer.append(self._make_path_row(
             default=self.request.path if self.request else "",
-            placeholder="目标路径",
-            row_title="目标",
+            placeholder=_("目标路径"),
+            row_title=_("目标"),
             mode="both",
             entry_name="_ren_entry"))
 
         name_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         name_entry = Gtk.Entry()
-        name_entry.set_placeholder_text("新名称")
+        name_entry.set_placeholder_text(_("新名称"))
         name_entry.set_hexpand(True)
         self._ren_name_entry = name_entry
-        name_box.append(Gtk.Label(label="新名称:"))
+        name_box.append(Gtk.Label(label=_("新名称:")))
         name_box.append(name_entry)
         outer.append(name_box)
 
-        btn = Gtk.Button(label="执行重命名")
+        btn = Gtk.Button(label=_("执行重命名"))
         btn.add_css_class("suggested-action")
         btn.set_halign(Gtk.Align.CENTER)
         btn.connect("clicked", self._do_rename)
@@ -379,7 +380,7 @@ class OperationView(Adw.Bin):
             self._show_error(m)
             return
         if not new_name or os.path.sep in new_name or new_name in (".", ".."):
-            self._show_error("新名称无效")
+            self._show_error(_("新名称无效"))
             return
         new_path = operations.join_path(os.path.dirname(path), new_name)
         cmd = operations.build_command("rename", path=path, new_path=new_path)
@@ -404,9 +405,9 @@ class OperationView(Adw.Bin):
         from gi.repository import GLib
         try:
             proc.wait_check_finish(res)
-            self._on_done(True, "操作成功")
+            self._on_done(True, _("操作成功"))
         except GLib.Error as e:
-            self._on_done(False, e.message or "操作失败")
+            self._on_done(False, e.message or _("操作失败"))
 
     def _on_done(self, ok: bool, msg: str) -> None:
         from gi.repository import GLib
@@ -415,9 +416,9 @@ class OperationView(Adw.Bin):
 
     def _emit_done(self, ok: bool, msg: str) -> bool:
         if ok:
-            self._toast(msg or "操作成功")
+            self._toast(msg or _("操作成功"))
         else:
-            self._show_error(msg or "操作失败")
+            self._show_error(msg or _("操作失败"))
         return False
 
     # ---------- UI 助手 ----------
@@ -427,14 +428,14 @@ class OperationView(Adw.Bin):
             self.toast_overlay.add_toast(toast)
             return
         # fallback dialog
-        self._info_dialog("完成", title)
+        self._info_dialog(_("完成"), title)
 
     def _show_error(self, msg: str) -> None:
-        self._info_dialog("错误", msg, error=True)
+        self._info_dialog(_("错误"), msg, error=True)
 
     def _info_dialog(self, heading: str, body: str, error: bool = False) -> None:
         dlg = Adw.MessageDialog(transient_for=self.get_root(), heading=heading, body=body)
-        dlg.add_response("ok", "确定")
+        dlg.add_response("ok", _("确定"))
         if error:
             dlg.add_css_class("error-dialog")
         dlg.present()

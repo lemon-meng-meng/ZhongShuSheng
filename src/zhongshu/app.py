@@ -14,25 +14,11 @@ from gi.repository import Adw, Gdk, Gio, Gtk
 from . import __app_id__, __app_name__, __version__
 from .runner import parse_args, OperationRequest
 from .window import MainWindow
+from .i18n import gettext as _
 
 # 用于把 argv 通过环境变量绕过 GApplication 解析的自定义键。
 # main() 会把 --operation 等参数抽出并写入此环境变量。
 ARGV_ENV_KEY = "ZHONGSHU_ARGV"
-
-CSS = b"""
-.zhongshu-tile {
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: all 200ms ease;
-}
-.zhongshu-tile:hover {
-    box-shadow: 0 6px 16px rgba(0,0,0,0.14);
-}
-.zhongshu-tile:active {
-    transform: translateY(1px);
-}
-.warning-banner { background-color: #fa709a; }
-"""
 
 # Nautilus 右键菜单带参调用使用以下前缀的所有参数；其它参数（GApplication 标准）
 # 不属于此集合。
@@ -68,6 +54,35 @@ def _maybe_parse(argv) -> Optional[OperationRequest]:
         return None
 
 
+def _load_css(app_id: str) -> str:
+    """加载 CSS 样式文件，支持源码运行、deb 安装、AppImage 多种场景。"""
+    # 搜索 data/style.css 的可能位置
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        # 源码树：src/zhongshu/app.py -> ../../data/style.css
+        os.path.normpath(os.path.join(here, "..", "..", "data", "style.css")),
+        # deb 安装：/opt/zhongshu/data/style.css
+        "/opt/zhongshu/data/style.css",
+        # AppImage：usr/lib/zhongshu/src/zhongshu/app.py -> ../../../share/zhongshu/data/style.css
+        os.path.normpath(os.path.join(here, "..", "..", "..", "..", "share", "zhongshu", "data", "style.css")),
+        # APPDIR 环境变量
+        (os.path.join(os.environ.get("APPDIR", ""), "usr", "share", "zhongshu", "data", "style.css")
+         if os.environ.get("APPDIR") else ""),
+    ]
+    for css_path in candidates:
+        if css_path and os.path.isfile(css_path):
+            with open(css_path, "r", encoding="utf-8") as f:
+                return f.read()
+    # 兜底：内联备用样式（不含字体定义）
+    return """
+.zhongshu-tile { border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: box-shadow 200ms ease, transform 200ms ease; }
+.zhongshu-tile:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.14); transform: translateY(-1px); }
+.zhongshu-tile:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+.warning-banner { background-color: #fa709a; color: white; }
+.dim-label { opacity: 0.7; }
+"""
+
+
 class ZhongshuApplication(Adw.Application):
     main_window: Optional[MainWindow] = None
 
@@ -81,8 +96,9 @@ class ZhongshuApplication(Adw.Application):
             self.main_window = MainWindow(self)
 
         # 加载样式
+        css_content = _load_css(__app_id__)
         provider = Gtk.CssProvider()
-        provider.load_from_data(CSS)
+        provider.load_from_data(css_content.encode('utf-8'))
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(), provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
@@ -151,9 +167,9 @@ def _handle_context_menu_subcommand(argv) -> int:
     script = next((p for p in candidates if p and os.path.isfile(p)), None)
     if script is None:
         sys.stderr.write(
-            "未找到右键菜单部署脚本 install-context-menu.sh\n"
-            "请从源码树运行，或安装 zhongshu.deb；AppImage 用户也可以手动运行\n"
-            "源码树内的 scripts/install-context-menu.sh --appimage <AppImage绝对路径>。\n"
+            _("未找到右键菜单部署脚本 install-context-menu.sh\n")
+            + _("请从源码树运行，或安装 zhongshu.deb；AppImage 用户也可以手动运行\n")
+            + _("源码树内的 scripts/install-context-menu.sh --appimage <AppImage绝对路径>。\n")
         )
         return 1
 
@@ -179,7 +195,7 @@ def _handle_context_menu_subcommand(argv) -> int:
         proc = subprocess.run(cmd, check=False)
         return proc.returncode
     except OSError as e:
-        sys.stderr.write(f"运行部署脚本失败: {e}\n")
+        sys.stderr.write(_("运行部署脚本失败: {error}\n").format(error=e))
         return 1
 
 

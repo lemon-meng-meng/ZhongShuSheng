@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from typing import Callable, List, Optional
 
 from . import operations
+from .i18n import gettext as _
 
 
 @dataclass
@@ -37,15 +38,15 @@ def parse_args(argv: Optional[List[str]] = None) -> OperationRequest:
     """解析命令行参数。"""
     p = argparse.ArgumentParser(
         prog="zhongshu-app",
-        description="中书省 - 系统目录文件管理工具",
+        description=_("中书省 - 系统目录文件管理工具"),
     )
     p.add_argument("--operation", required=True,
                    choices=["permission", "move", "delete",
                             "new_folder", "new_file", "rename"])
-    p.add_argument("--path", default="", help="目标文件或文件夹路径")
-    p.add_argument("--dest", default="", help="移动操作的目标目录")
-    p.add_argument("--parent", default="", help="新建操作的父目录")
-    p.add_argument("--name", dest="new_name", default="", help="新建/重命名时的新名称")
+    p.add_argument("--path", default="", help=_("目标文件或文件夹路径"))
+    p.add_argument("--dest", default="", help=_("移动操作的目标目录"))
+    p.add_argument("--parent", default="", help=_("新建操作的父目录"))
+    p.add_argument("--name", dest="new_name", default="", help=_("新建/重命名时的新名称"))
     args = p.parse_args(argv)
 
     return OperationRequest(
@@ -76,7 +77,7 @@ def build_command_for(req: OperationRequest) -> List[str]:
     if op == "rename":
         new_path = operations.join_path(os.path.dirname(req.path), req.new_name)
         return operations.build_command("rename", path=req.path, new_path=new_path)
-    raise ValueError(f"未知操作: {op}")
+    raise ValueError(_("未知操作: {op}").format(op=op))
 
 
 class OperationRunner:
@@ -112,7 +113,7 @@ class OperationRunner:
         try:
             proc.wait_check_finish(result)
             if self.on_done:
-                self.on_done(True, "操作成功")
+                self.on_done(True, _("操作成功"))
         except GLib.Error as e:
             if self.on_done:
-                self.on_done(False, e.message or "操作失败")
+                self.on_done(False, e.message or _("操作失败"))

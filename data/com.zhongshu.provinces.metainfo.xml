@@ -17,11 +17,12 @@
     <p>
       所有涉及系统目录的写操作通过 pkexec 进行图形化提权，
       具备 Nautilus 右键菜单扩展，可对任意文件 / 文件夹直接发起操作。
+      支持多语言（中文/English）与字体粗细切换（常规/加粗）。
     </p>
   </description>
   <launchable type="desktop-id">com.zhongshu.provinces.desktop</launchable>
-  <url type="homepage">https://github.com/lemon/zhongshu</url>
-  <url type="bugtracker">https://github.com/lemon/zhongshu/issues</url>
+  <url type="homepage">https://github.com/lemon-meng-meng/ZhongShuSheng</url>
+  <url type="bugtracker">https://github.com/lemon-meng-meng/ZhongShuSheng/issues</url>
   <provides>
     <binary>zhongshu-app</binary>
   </provides>

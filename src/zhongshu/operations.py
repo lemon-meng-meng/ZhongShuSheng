@@ -16,6 +16,8 @@ try:
 except Exception:  # pragma: no cover - magic 为可选
     _HAS_MAGIC = False
 
+from .i18n import gettext as _
+
 
 def home_dir() -> str:
     """返回当前用户的 home 主目录绝对路径（带末尾 /）。"""
@@ -38,7 +40,7 @@ def is_executable_binary(path: str) -> Tuple[bool, str]:
     返回 (是否可执行, 描述)。
     """
     if not os.path.isfile(path):
-        return False, "目标不是普通文件"
+        return False, _("目标不是普通文件")
 
     desc = ""
     if _HAS_MAGIC:
@@ -59,7 +61,7 @@ def is_executable_binary(path: str) -> Tuple[bool, str]:
         return True, desc
     # shell/xml 等脚本也允许授予运行权限
     if any(low.startswith(p) for p in ("ascii text", "text", "script", "unicode")):
-        return False, desc + "（脚本类文件，可授予运行权限）"
+        return False, desc + _("（脚本类文件，可授予运行权限）")
     return False, desc
 
 
@@ -90,7 +92,7 @@ def build_command(action: str, **kwargs) -> List[str]:
     if action == "rename":
         return ["mv", "--", kwargs["path"], kwargs["new_path"]]
 
-    raise ValueError(f"未知操作: {action}")
+    raise ValueError(_("未知操作: {action}").format(action=action))
 
 
 def wrap_with_pkexec(cmd: List[str]) -> List[str]:
@@ -109,10 +111,10 @@ def run_command(cmd: List[str], use_auth: bool) -> Tuple[bool, str]:
             check=False,
         )
     except FileNotFoundError as e:
-        return False, f"命令不可用: {e}"
+        return False, _("命令不可用: {error}").format(error=e)
     if proc.returncode == 0:
         return True, proc.stdout.strip()
-    return False, (proc.stderr.strip() or proc.stdout.strip() or "操作失败")
+    return False, (proc.stderr.strip() or proc.stdout.strip() or _("操作失败"))
 
 
 def join_path(parent: str, name: str) -> str:
@@ -123,12 +125,12 @@ def join_path(parent: str, name: str) -> str:
 def validate_path(path: str, must_exist: bool = False) -> Tuple[bool, str]:
     """校验路径合法性与存在性。"""
     if not path or not path.strip():
-        return False, "路径不能为空"
+        return False, _("路径不能为空")
     path = os.path.abspath(os.path.expanduser(path))
     if path == "/":
-        return False, "不能对根目录执行此操作"
+        return False, _("不能对根目录执行此操作")
     if must_exist and not os.path.exists(path):
-        return False, "路径不存在: " + path
+        return False, _("路径不存在: ") + path
     return True, path
 
 

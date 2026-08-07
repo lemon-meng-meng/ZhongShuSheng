@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# packaging/build-appimage.sh —— 在源码目录下执行，构建 zhongshu-x86_64.AppImage
+# packaging/build-appimage.sh —— 在源码目录下执行，构建 AppImage
 #
 # 前置：
-#   1. 下载 appimagetool-x86_64.AppImage 到 /tmp/appimagetool.AppImage
-#   2. 运行： bash packaging/build-appimage.sh
+#   1. 下载对应架构的 appimagetool 到 /tmp/appimagetool.AppImage
+#   2. 运行： bash packaging/build-appimage.sh [arch]
+#      支持的架构：x86_64 (默认), aarch64, loongarch64
 #
 # 注：本 AppImage 适合「跨发行版」分发，但运行时仍需目标系统已安装
 #     GTK4 + libadwaita + pkexec，因为这些库自身体积巨大不便静态打包。
@@ -14,18 +15,21 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 APP_ID="com.zhongshu.provinces"
 APPDIR="$HERE/packaging/appimage"
 APPNAME_LOWER="zhongshu"
-OUT_DIR="$HERE/dist"
-APPIMAGE="$OUT_DIR/${APPNAME_LOWER}-$(uname -m).AppImage"
+OUT_DIR="$HERE/releases"
+TARGET_ARCH="${1:-$(uname -m)}"
+APPIMAGE="$OUT_DIR/${APPNAME_LOWER}-${TARGET_ARCH}.AppImage"
 
 mkdir -p "$OUT_DIR"
 
 # ---------- 填充 AppDir ----------
 USR="$APPDIR/usr"
 
-echo "==> 复制源码与数据"
+echo "==> 复制源码与数据 (目标架构: $TARGET_ARCH)"
 mkdir -p "$USR/lib/zhongshu/src/zhongshu"
+mkdir -p "$USR/share/locale"
 cp -r "$HERE/src/zhongshu/." "$USR/lib/zhongshu/src/zhongshu/"
 cp -r "$HERE/data/." "$USR/lib/zhongshu/data/"
+cp -r "$HERE/locale/." "$USR/share/locale/"
 
 # 启动器真实脚本（与 bin/zhongshu-app 一致的入口，避免 python3 -c 导致 sys.argv[0]='-c'）
 mkdir -p "$USR/lib/zhongshu"
@@ -113,7 +117,7 @@ if [ -z "$APPIMAGETOOL" ]; then
         echo "  真 URL 的 asset 名带版本前缀（如 appimagetool-947-x86_64.AppImage），"
         echo "  当前最新请参见 https://github.com/probonopd/go-appimage/releases"
         echo "  示例："
-        echo "    curl -L -o /tmp/appimagetool.AppImage https://github.com/probonopd/go-appimage/releases/download/continuous/appimagetool-$(uname -m).AppImage"
+        echo "    curl -L -o /tmp/appimagetool.AppImage https://github.com/probonopd/go-appimage/releases/download/continuous/appimagetool-${TARGET_ARCH}.AppImage"
         echo "    chmod +x /tmp/appimagetool.AppImage"
         echo "  或： sudo apt-get install -y libfuse2   # 若无 fuse"
         exit 1
@@ -121,7 +125,7 @@ if [ -z "$APPIMAGETOOL" ]; then
 fi
 
 echo "==> 使用 $APPIMAGETOOL 打包"
-export ARCH="${ARCH:-$(uname -m)}"
+export ARCH="${ARCH:-$TARGET_ARCH}"
 export VERSION="${VERSION:-0.1.1}"
 
 # 新版 appimagetool (probonopd/go-appimage, build≥177) 使用 Cobra 风格 CLI：

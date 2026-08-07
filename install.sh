@@ -21,6 +21,7 @@ NAUT_EXT_DIR="/usr/share/nautilus-python/extensions"
 APP_DIR="/usr/share/applications"
 ICON_DIR="/usr/share/icons/hicolor"
 METAINFO_DIR="/usr/share/metainfo"
+LOCALE_DEST="/usr/share/locale"
 
 require_root() {
     if [ "$(id -u)" != "0" ]; then
@@ -54,6 +55,7 @@ do_install() {
     mkdir -p "$PREFIX_DEST"
     cp -a src "$PREFIX_DEST/src"
     cp -a data "$PREFIX_DEST/data"
+    cp -a locale "$PREFIX_DEST/locale"
 
     echo "==> 创建启动器 $BIN_DEST"
     cat > "$BIN_DEST" <<'EOF'
@@ -84,6 +86,10 @@ EOF
     install -m0644 "$PREFIX/nautilus-extension/zhongshu_menu.py" \
         "$NAUT_EXT_DIR/zhongshu_menu.py"
 
+    echo "==> 安装语言文件"
+    mkdir -p "$LOCALE_DEST"
+    cp -a "$PREFIX/locale"/* "$LOCALE_DEST/"
+
     echo
     echo "安装完成。请重启 Nautilus 使右键菜单生效："
     echo "   nautilus -q"
@@ -98,6 +104,7 @@ do_uninstall() {
     rm -f "$METAINFO_DIR/com.zhongshu.provinces.metainfo.xml"
     rm -f "$ICON_DIR/scalable/apps/$APP_ID.png"
     rm -f "$NAUT_EXT_DIR/zhongshu_menu.py"
+    rm -rf "$LOCALE_DEST/zhongshu"
     gtk-update-icon-cache -f "$ICON_DIR" 2>/dev/null || true
     echo "卸载完成。"
 }

@@ -11,11 +11,22 @@ gir1.2-nautilus-3.0 (Nautilus 3)。
 """
 from __future__ import annotations
 
+import gettext
+import locale
 import os
 import subprocess
 import urllib.parse
 
 import gi
+
+# 国际化支持
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), "..", "locale")
+LOCALE_DIR = os.path.normpath(LOCALE_DIR)
+try:
+    _trans = gettext.translation("zhongshu", LOCALE_DIR, languages=[locale.getdefaultlocale()[0] or "en"], fallback=True)
+    _ = _trans.gettext
+except Exception:
+    _ = lambda s: s
 
 # Nautilus 命名空间优先 4.x，再退化 3.x；不要硬性依赖 Gtk（扩展本身不需要它）。
 Nautilus = None
@@ -146,32 +157,32 @@ if Nautilus is not None and GObject is not None:
                         in_background: bool = False) -> list:
             top = Nautilus.MenuItem(
                 name="ZhongshuMenu::top",
-                label="使用中书省操作",
-                tip="在非主目录下对文件进行特权操作",
+                label=_("使用中书省操作"),
+                tip=_("在非主目录下对文件进行特权操作"),
             )
             submenu = Nautilus.Menu()
             top.set_submenu(submenu)
 
             if in_background:
-                self._append(submenu, "新建文件夹",
+                self._append(submenu, _("新建文件夹"),
                              lambda *_: _spawn("new_folder", parent=path))
-                self._append(submenu, "新建文件",
+                self._append(submenu, _("新建文件"),
                              lambda *_: _spawn("new_file", parent=path))
                 return [top]
 
-            self._append(submenu, "授予运行权限",
+            self._append(submenu, _("授予运行权限"),
                          lambda *_: _spawn("permission", path=path),
                          enabled=not is_dir)
-            self._append(submenu, "移动到…",
+            self._append(submenu, _("移动到…"),
                          lambda *_: _spawn("move", path=path))
-            self._append(submenu, "删除",
+            self._append(submenu, _("删除"),
                          lambda *_: _spawn("delete", path=path))
             if is_dir:
-                self._append(submenu, "新建文件夹（此处）",
+                self._append(submenu, _("新建文件夹（此处）"),
                              lambda *_: _spawn("new_folder", parent=path))
-                self._append(submenu, "新建文件（此处）",
+                self._append(submenu, _("新建文件（此处）"),
                              lambda *_: _spawn("new_file", parent=path))
-            self._append(submenu, "重命名",
+            self._append(submenu, _("重命名"),
                          lambda *_: _spawn("rename", path=path))
             return [top]
 

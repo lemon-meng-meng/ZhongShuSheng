@@ -63,6 +63,10 @@ while [ "$#" -gt 0 ]; do
   系统级安装（需root）： sudo install-context-menu.sh --system
   卸载：              install-context-menu.sh --uninstall
                        sudo install-context-menu.sh --uninstall --system
+
+多架构支持：
+  脚本会自动检测当前架构 (x86_64/aarch64/loongarch64) 并在 releases/ 目录下
+  查找对应的 zhongshu-<arch>.AppImage 文件。
 EOF
             exit 0 ;;
         *)
@@ -249,14 +253,14 @@ do_install() {
             echo "    检测到已安装的 zhongshu 启动器，将以已安装模式部署"
             APPIMAGE_PATH=""
         else
-            # 尝试自动发现 dist/ 下的 AppImage
+            # 尝试自动发现 releases/ 下的 AppImage
             for candidate in \
-                "$SELF/../dist/zhongshu-x86_64.AppImage" \
-                "$SELF/../dist/zhongshu-$(uname -m).AppImage" \
-                "$SELF/../../dist/zhongshu-x86_64.AppImage" \
-                "$SELF/../../dist/zhongshu-$(uname -m).AppImage" \
-                "$(pwd)/dist/zhongshu-x86_64.AppImage" \
-                "$(pwd)/dist/zhongshu-$(uname -m).AppImage"; do
+                "$SELF/../releases/zhongshu-x86_64.AppImage" \
+                "$SELF/../releases/zhongshu-$(uname -m).AppImage" \
+                "$SELF/../../releases/zhongshu-x86_64.AppImage" \
+                "$SELF/../../releases/zhongshu-$(uname -m).AppImage" \
+                "$(pwd)/releases/zhongshu-x86_64.AppImage" \
+                "$(pwd)/releases/zhongshu-$(uname -m).AppImage"; do
                 if [ -f "$candidate" ] && [ -x "$candidate" ]; then
                     echo "    自动探测到 AppImage： $candidate"
                     APPIMAGE_PATH="$(readlink -f -- "$candidate")"
@@ -267,7 +271,7 @@ do_install() {
         if [ -z "$APPIMAGE_PATH" ] && [ ! -x /usr/bin/zhongshu-app ] && [ ! -x /usr/local/bin/zhongshu-app ]; then
             echo "错误：未传 --appimage 参数，也未检测到 zhongshu-app 启动器。" >&2
             echo "   AppImage 用户请使用： $0 --appimage /path/to/zhongshu-x86_64.AppImage" >&2
-            echo "   deb  用户请先安装 zhongshu 包： sudo apt-get install -y ./dist/zhongshu_*.deb" >&2
+            echo "   deb  用户请先安装 zhongshu 包： sudo apt-get install -y ./releases/zhongshu_*.deb" >&2
             exit 3
         fi
     fi

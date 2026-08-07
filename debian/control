@@ -13,9 +13,9 @@ Build-Depends: debhelper-compat (= 13),
  desktop-file-utils,
  appstream-util
 Standards-Version: 4.6.2
-Homepage: https://github.com/lemon/zhongshu
-Vcs-Git: https://github.com/lemon/zhongshu.git
-Vcs-Browser: https://github.com/lemon/zhongshu
+Homepage: https://github.com/lemon-meng-meng/ZhongShuSheng
+Vcs-Git: https://github.com/lemon-meng-meng/ZhongShuSheng.git
+Vcs-Browser: https://github.com/lemon-meng-meng/ZhongShuSheng
 Rules-Requires-Root: no
 
 Package: zhongshu

@@ -1,0 +1,434 @@
+# 中书省 - 翻译模板文件
+# Copyright (C) 2026 中书省开发者
+# This file is distributed under the same license as the zhongshu package.
+# FIRST AUTHOR <lemon@local>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: zhongshu 0.1.1\n"
+"Report-Msgid-Bugs-To: https://github.com/lemon-meng-meng/ZhongShuSheng/issues\n"
+"POT-Creation-Date: 2026-08-07 14:30+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/zhongshu/app.py:154
+msgid "未找到右键菜单部署脚本 install-context-menu.sh\n请从源码树运行，或安装 zhongshu.deb；AppImage 用户也可以手动运行\n源码树内的 scripts/install-context-menu.sh --appimage <AppImage绝对路径>。\n"
+msgstr ""
+
+#: src/zhongshu/app.py:183
+msgid "运行部署脚本失败: {error}\n"
+msgstr ""
+
+#: src/zhongshu/i18n.py:33
+msgid "中文"
+msgstr ""
+
+#: src/zhongshu/i18n.py:33
+msgid "English"
+msgstr ""
+
+#: src/zhongshu/i18n.py:72
+msgid "常规"
+msgstr ""
+
+#: src/zhongshu/i18n.py:72
+msgid "加粗"
+msgstr ""
+
+#: src/zhongshu/window.py:122
+msgid "语言:"
+msgstr ""
+
+#: src/zhongshu/window.py:144
+msgid "字体:"
+msgstr ""
+
+#: src/zhongshu/window.py:27
+msgid "授予运行权限"
+msgstr ""
+
+#: src/zhongshu/window.py:28
+msgid "移动到"
+msgstr ""
+
+#: src/zhongshu/window.py:29
+msgid "删除"
+msgstr ""
+
+#: src/zhongshu/window.py:30
+msgid "新建文件夹"
+msgstr ""
+
+#: src/zhongshu/window.py:31
+msgid "新建文件"
+msgstr ""
+
+#: src/zhongshu/window.py:32
+msgid "重命名"
+msgstr ""
+
+#: src/zhongshu/window.py:33
+msgid "中书省"
+msgstr ""
+
+#: src/zhongshu/window.py:78
+msgid "非主目录的文件/文件夹管理工具"
+msgstr ""
+
+#: src/zhongshu/window.py:99
+msgid "点击任一功能进入二级操作界面：选择目标 → 行相关操作 → 输入密码 → 完成"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:17
+msgid "授予运行权限"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:18
+msgid "移动文件 / 文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:19
+msgid "删除文件 / 文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:20
+msgid "新建文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:21
+msgid "新建文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:22
+msgid "重命名"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:73
+msgid "返回"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:76
+msgid "操作"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:76
+msgid "中书省"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:90
+msgid "路径"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:109
+msgid "选择文件…"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:110
+msgid "选择一个文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:114
+msgid "选择文件夹…"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:115
+msgid "选择一个文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:119
+msgid "选择…"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:127
+msgid "选择文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:138
+msgid "选择文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:140
+msgid "任意文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:161
+msgid "选择一个二进制文件以授予运行权限"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:164
+msgid "文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:174
+msgid "检测并授予运行权限"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:191
+msgid "该文件不是可执行二进制，无法授予运行权限"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:203
+msgid "1. 选择要移动的文件或文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:206
+msgid "源路径"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:207
+msgid "源"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:211
+msgid "2. 选择目标父目录（如 /opt）"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:215
+msgid "目标"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:219
+msgid "如目标在系统目录（非 home），执行时会弹出密码框"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:223
+msgid "执行移动"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:239
+msgid "目标不是目录: "
+msgstr ""
+
+#: src/zhongshu/operation_view.py:253
+msgid "警告：将删除非 home 主目录下的文件/文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:254
+msgid "我已知风险，继续操作"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:261
+msgid "选择要删除的文件或文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:264
+msgid "目标路径"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:269
+msgid "我已确认此操作不可撤销"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:272
+msgid "确认删除"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:281
+msgid "请先勾选确认风险"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:296
+msgid "新建文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:296
+msgid "新建文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:297
+msgid "{label}：选择父目录并输入名称"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:299
+msgid "父目录"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:302
+msgid "/opt 或其他系统目录"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:310
+msgid "名称"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:315
+msgid "名称:"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:319
+msgid "创建文件"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:319
+msgid "创建文件夹"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:332
+msgid "名称为空或包含非法字符"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:336
+msgid "父目录不是目录: "
+msgstr ""
+
+#: src/zhongshu/operation_view.py:350
+msgid "选择要重命名的文件或文件夹"
+msgstr ""
+
+#: src/zhong3shu/operation_view.py:353
+msgid "目标路径"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:360
+msgid "新名称"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:363
+msgid "新名称:"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:367
+msgid "执行重命名"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:382
+msgid "新名称无效"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:407
+msgid "操作成功"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:409
+msgid "操作失败"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:418
+msgid "操作成功"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:420
+msgid "操作失败"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:430
+msgid "完成"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:433
+msgid "错误"
+msgstr ""
+
+#: src/zhongshu/operation_view.py:437
+msgid "确定"
+msgstr ""
+
+#: src/zhongshu/runner.py:40
+msgid "中书省 - 系统目录文件管理工具"
+msgstr ""
+
+#: src/zhongshu/runner.py:45
+msgid "目标文件或文件夹路径"
+msgstr ""
+
+#: src/zhongshu/runner.py:46
+msgid "移动操作的目标目录"
+msgstr ""
+
+#: src/zhongshu/runner.py:47
+msgid "新建操作的父目录"
+msgstr ""
+
+#: src/zhongshu/runner.py:48
+msgid "新建/重命名时的新名称"
+msgstr ""
+
+#: src/zhongshu/runner.py:79
+msgid "未知操作: {op}"
+msgstr ""
+
+#: src/zhongshu/runner.py:115
+msgid "操作成功"
+msgstr ""
+
+#: src/zhongshu/runner.py:118
+msgid "操作失败"
+msgstr ""
+
+#: src/zhongshu/operations.py:41
+msgid "目标不是普通文件"
+msgstr ""
+
+#: src/zhongshu/operations.py:62
+msgid "（脚本类文件，可授予运行权限）"
+msgstr ""
+
+#: src/zhongshu/operations.py:93
+msgid "未知操作: {action}"
+msgstr ""
+
+#: src/zhongshu/operations.py:112
+msgid "命令不可用: {error}"
+msgstr ""
+
+#: src/zhongshu/operations.py:115
+msgid "操作失败"
+msgstr ""
+
+#: src/zhongshu/operations.py:126
+msgid "路径不能为空"
+msgstr ""
+
+#: src/zhongshu/operations.py:129
+msgid "不能对根目录执行此操作"
+msgstr ""
+
+#: src/zhongshu/operations.py:131
+msgid "路径不存在: "
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:149
+msgid "使用中书省操作"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:150
+msgid "在非主目录下对文件进行特权操作"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:156
+msgid "新建文件夹"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:158
+msgid "新建文件"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:162
+msgid "授予运行权限"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:165
+msgid "移动到…"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:167
+msgid "删除"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:170
+msgid "新建文件夹（此处）"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:172
+msgid "新建文件（此处）"
+msgstr ""
+
+#: nautilus-extension/zhongshu_menu.py:174
+msgid "重命名"
+msgstr ""

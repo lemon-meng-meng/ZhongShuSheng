@@ -38,6 +38,8 @@ Nautilus 右键菜单，让任何用户都可以安全、直观地进行这些�
 Nautilus 右键菜单「使用中书省操作」会出现在任意文件/文件夹上，提供完整 5 个二级选项；
 在空白处右键，仅提供「新建文件夹」与「新建文件」。
 
+界面底部提供**语言切换**（中文/English）与**字体粗细切换**（常规/加粗）按钮。
+
 ## 技术栈
 
 | 模块     | 选型                                           |
@@ -74,15 +76,17 @@ sudo apt-get install -y debhelper dh-python devscripts fakeroot \
 │   ├── window.py          # 主窗口（一级界面）
 │   ├── operation_view.py  # 二级操作界面
 │   ├── operations.py      # 文件操作工具模块
-│   └── runner.py          # 命令执行/参数解析
+│   ├── runner.py          # 命令执行/参数解析
+│   └── i18n.py            # 国际化模块
 ├── bin/zhongshu-app        # 源码树内启动脚本
 ├── nautilus-extension/    # Nautilus 右键菜单扩展
-├── data/                  # 桌面文件、图标、CSS、metainfo
+├── data/                  # 桌面文件、图标、CSS、metainfo、字体
 ├── debian/                # 原生 Debian 打包目录
 ├── packaging/             # deb / AppImage 打包脚本
+├── locale/                # 翻译文件
 ├── tests/                 # 测试
 ├── install.sh             # 一键安装到本地系统
-└── dist/                  # 构建产物输出目录（gitignore）
+└── releases/              # 构建产物输出目录（gitignore）
 ```
 
 ## 安装
@@ -102,7 +106,7 @@ sudo bash install.sh --uninstall
 ### 选项 B：安装 .deb 包（右键菜单随包自动安装）
 
 ```bash
-sudo apt-get install -y ./dist/zhongshu_0.1.0-1_all.deb
+sudo apt-get install -y ./releases/zhongshu_0.1.1-1_all.deb
 ```
 
 deb 安装后无须额外步骤：Nautilus 扩展与启动器随之进入
@@ -112,9 +116,9 @@ postinst 重启 Nautilus 后即可看到右键菜单「使用中书省操作」�
 ### 选项 C：运行 AppImage（需先部署右键菜单）
 
 ```bash
-chmod +x dist/zhongshu-x86_64.AppImage
-./dist/zhongshu-x86_64.AppImage                  # 启动一级界面
-./dist/zhongshu-x86_64.AppImage --install-context-menu   # 部署右键菜单到当前用户
+chmod +x releases/zhongshu-x86_64.AppImage
+./releases/zhongshu-x86_64.AppImage                  # 启动一级界面
+./releases/zhongshu-x86_64.AppImage --install-context-menu   # 部署右键菜单到当前用户
 ```
 
 执行 `--install-context-menu` 后会自动：
@@ -126,10 +130,26 @@ chmod +x dist/zhongshu-x86_64.AppImage
 卸载右键菜单：
 
 ```bash
-./dist/zhongshu-x86_64.AppImage --uninstall-context-menu
+./releases/zhongshu-x86_64.AppImage --uninstall-context-menu
 ```
 
 > AppImage 仍需系统已安装 GTK4 + libadwaita + pkexec。
+
+## 多架构支持
+
+本项目支持以下架构：
+
+| 架构 | AppImage | Debian 包 |
+|------|----------|-----------|
+| x86_64 | ✅ | ✅ |
+| aarch64 (ARM64) | ✅ | ✅ |
+| loongarch64 | ✅ | ✅ |
+
+构建指定架构的 AppImage：
+```bash
+bash packaging/build-appimage.sh aarch64
+bash packaging/build-appimage.sh loongarch64
+```
 
 ## 开发与打包
 
@@ -169,6 +189,27 @@ bash packaging/build-appimage.sh
   在 Nautilus 右键菜单中，会显示徽标强调「系统目录」风险提示。
 - 所有特权命令严格使用位置参数构造，通过 `--` 终止选项，避免路径名注入。
 - 二进制判断使用 libmagic 而非后缀名，避免误授权。
+
+## 字体许可证声明
+
+本项目使用 **HarmonyOS Sans** 字体家族，包含以下字体文件：
+
+- `data/fonts/HarmonyOS_Sans_Regular.ttf`（英文常规）
+- `data/fonts/HarmonyOS_Sans_Bold.ttf`（英文加粗）
+- `data/fonts/HarmonyOS_Sans_SC_Regular.ttf`（中文常规）
+- `data/fonts/HarmonyOS_Sans_SC_Bold.ttf`（中文加粗）
+
+**版权归属**：华为设备有限公司 (Huawei Device Co., Ltd.)  
+**许可证**：HarmonyOS Sans Fonts License Agreement
+
+主要许可条款摘要：
+1. 可免费用于任何软件（除字体软件外）的嵌入、打包、再分发和销售
+2. 不得修改字体文件
+3. 不得单独分发或销售字体文件
+4. 必须在软件中显著位置声明使用了 HarmonyOS Sans 字体
+5. 必须保留版权声明和许可证文本
+
+完整许可证文本见 `data/fonts/HarmonyOS_Sans_LICENSE.txt` 与 `data/fonts/HarmonyOS_Sans_SC_LICENSE.txt`。
 
 # 关于图标
 本工具的图标由通义万相生成

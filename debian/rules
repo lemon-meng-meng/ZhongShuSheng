@@ -21,9 +21,11 @@ override_dh_auto_install:
 	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
 	install -d $(DESTDIR)/usr/share/metainfo
 	install -d $(DESTDIR)/usr/share/nautilus-python/extensions
+	install -d $(DESTDIR)/usr/share/locale
 
 	cp -r src/zhongshu/. $(DESTDIR)/opt/zhongshu/src/zhongshu/
 	cp -r data/. $(DESTDIR)/opt/zhongshu/data/
+	cp -r locale/. $(DESTDIR)/usr/share/locale/
 
 	install -m0755 debian/local/zhongshu-app $(DESTDIR)/usr/bin/zhongshu-app
 
